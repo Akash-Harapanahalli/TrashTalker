@@ -1,0 +1,3 @@
+function motorCommands = DataToMotorCommands(data)
+s = size(c)
+end
