@@ -1,18 +1,15 @@
-function EightMotorCommandsToArduino(motor_commands)
-a = arduino();
-photodiodes = ['D22';'D24';'D26';'D28';'D30';'D32';'D34';'D36'];
-motors      = ['D23';'D25';'D27';'D29';'D31';'D33';'D35';'D37'];
+% function EightMotorCommandsToArduino(motor_commands)
+% clear all;
+% a = arduino();
+motors = ['D13';'D12';'D11';' D9';' D7';' D6';' D4';' D2'];
+ %[' D2';' D4';' D6';' D7';' D9';'D11';'D12';'D13'];
+motor_commands = upTheme;
 
-mask        = [0,0,0,0,0,0,0,0];
-
-for i = 1:size(photodiodes)
-    configurePin(a,photodiodes(i,:),'DigitalInput');
-end
 for i = 1:size(motors)
-    configurePin(a,motors     (i,:),'DigitalOutput');
+    configurePin(a,strip(motors(i,:)),'DigitalOutput');
 end
 
-T = 0.25;
+T = 0.5;
 s = size(motor_commands);
 
 for j = 1:s(1)
@@ -21,23 +18,18 @@ for j = 1:s(1)
 
     for i = 1:8
         if(motor_flags(i) == 1)
-            mask(i) = 1;
-            writePWMVoltage(a, motors(i,:), 2);
+            writePWMVoltage(a, strip(motors(i,:)), 2);
         end
     end
-    pause(0.1);
-
-    while(sum(mask) > 0)
-        for i = 1:8
-            if(motor_flags(i) == 1 && readDigitalPin(a,photodiodes(i)))
-                mask(i) = 0;
-                writePWMVoltage(a, motors(i,:), 2);
-            end
-        end
+    while(toc < 0.2)
+        pause(0.001);
     end
-
+    for i = 1:8
+        writePWMVoltage(a, strip(motors(i,:)), 0);
+    end
     while(toc < T)
         pause(0.001);
     end
 end
-end
+
+% end
